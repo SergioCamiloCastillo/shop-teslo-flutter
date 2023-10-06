@@ -5,14 +5,14 @@ import 'package:teslo_shop_flutter/features/products/presentation/screens/screen
 final appRouter = GoRouter(initialLocation: "/login", routes: [
    GoRoute(
     path: "/register",
-    builder: (context, state) => RegisterScreen(),
+    builder: (context, state) => const RegisterScreen(),
   ),
   GoRoute(
     path: "/login",
-    builder: (context, state) => LoginScreen(),
+    builder: (context, state) => const LoginScreen(),
   ),
   GoRoute(
     path: "/",
-    builder: (context, state) => ProductsScreen(),
+    builder: (context, state) => const ProductsScreen(),
   )
 ]);

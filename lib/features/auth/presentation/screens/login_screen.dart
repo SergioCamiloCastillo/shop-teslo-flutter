@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:teslo_shop_flutter/features/auth/presentation/providers/login_form_provider.dart';
+import 'package:teslo_shop_flutter/features/auth/presentation/providers/provider.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -54,6 +54,7 @@ class _LoginForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     //con esto ref.watch(LoginFormProvider), tengo el valor del state
     final loginFormState = ref.watch(loginFormProvider);
+
     //con esto WidgetRef ref, tengo todos los providers de riverpod
     final textStyles = Theme.of(context).textTheme;
 
@@ -79,7 +80,7 @@ class _LoginForm extends ConsumerWidget {
             label: 'Contraseña',
             obscureText: true,
             onChanged: (value) =>
-                ref.read(loginFormProvider.notifier).onPasswordChange(value),
+                ref.read(loginFormProvider.notifier).onPasswordChanged(value),
             errorMessage: loginFormState.isFormPosted
                 ? loginFormState.password.errorMessage
                 : null,
