@@ -81,6 +81,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
   onNameChange(String value) {
     final newName = Name.dirty(value);
+    print("llega aqui");
     state = state.copyWith(
         name: newName,
         isValid: Formz.validate(
@@ -98,12 +99,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final name = Name.dirty(state.name.value);
-    final passwordRepeat = PasswordRepeat.dirty(state.name.value);
+    final passwordRepeat = PasswordRepeat.dirty(state.passwordRepeat.value);
     // cuando hago asignacion del state como state=, le estoy diciendo a flutter que hubo un cambio en el state, manda a verficar a todos los listener que esten pendiente de los cambios de estado
     state = state.copyWith(
         isFormPosted: true,
         email: email,
         password: password,
+        name: name,
+        passwordRepeat: passwordRepeat,
         isValid: Formz.validate([email, password, passwordRepeat, name]));
   }
 }

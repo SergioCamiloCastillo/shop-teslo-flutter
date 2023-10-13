@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_shop_flutter/features/auth/presentation/providers/provider.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -59,11 +61,14 @@ class RegisterScreen extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatelessWidget {
+class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    //colocando ConsumerWidget, y colocando WidgetRef ref, tengo acceso a todos los providers de riverpod
+    final registerForm = ref.watch(registerFormProvider);
+    //registerForm, me da acceso al state, no al notifier
     final textStyles = Theme.of(context).textTheme;
 
     return Padding(
@@ -73,24 +78,38 @@ class _RegisterForm extends StatelessWidget {
           const Spacer(),
           Text('Nueva cuenta', style: textStyles.titleMedium),
           const Spacer(),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Nombre completo',
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.name,
+            onChanged: (value) =>
+                ref.read(registerFormProvider.notifier).onNameChange(value),
+            //ref.read(registerFormProvider.notifier).onEmailChange(value), hacemos esto para llamar al notificador que tiene el metodo que cambia el name
+            errorMessage: registerForm.name.errorMessage,
           ),
           const SizedBox(height: 30),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Correo',
             keyboardType: TextInputType.emailAddress,
+            onChanged: (value) =>
+                ref.read(registerFormProvider.notifier).onEmailChange(value),
+            errorMessage: registerForm.email.errorMessage,
           ),
           const SizedBox(height: 30),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            onChanged: (value) =>
+                ref.read(registerFormProvider.notifier).onPasswordChange(value),
+            errorMessage: registerForm.password.errorMessage,
           ),
           const SizedBox(height: 30),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Repita la contraseña',
             obscureText: true,
+            onChanged: (value) => ref
+                .read(registerFormProvider.notifier)
+                .onPasswordRepeatChange(value),
+            errorMessage: registerForm.passwordRepeat.errorMessage,
           ),
           const SizedBox(height: 30),
           SizedBox(
@@ -99,7 +118,9 @@ class _RegisterForm extends StatelessWidget {
               child: CustomFilledButton(
                 text: 'Crear',
                 buttonColor: Colors.black,
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(registerFormProvider.notifier).onFormSubmit();
+                },
               )),
           const Spacer(flex: 2),
           Row(
