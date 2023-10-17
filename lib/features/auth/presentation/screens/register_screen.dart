@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_shop_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop_flutter/features/auth/presentation/providers/provider.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
@@ -63,11 +64,20 @@ class RegisterScreen extends StatelessWidget {
 
 class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //colocando ConsumerWidget, y colocando WidgetRef ref, tengo acceso a todos los providers de riverpod
     final registerForm = ref.watch(registerFormProvider);
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackBar(context, next.errorMessage);
+    });
     //registerForm, me da acceso al state, no al notifier
     final textStyles = Theme.of(context).textTheme;
 
@@ -84,7 +94,9 @@ class _RegisterForm extends ConsumerWidget {
             onChanged: (value) =>
                 ref.read(registerFormProvider.notifier).onNameChange(value),
             //ref.read(registerFormProvider.notifier).onEmailChange(value), hacemos esto para llamar al notificador que tiene el metodo que cambia el name
-            errorMessage: registerForm.name.errorMessage,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.name.errorMessage
+                : null,
           ),
           const SizedBox(height: 30),
           CustomTextFormField(
@@ -92,7 +104,9 @@ class _RegisterForm extends ConsumerWidget {
             keyboardType: TextInputType.emailAddress,
             onChanged: (value) =>
                 ref.read(registerFormProvider.notifier).onEmailChange(value),
-            errorMessage: registerForm.email.errorMessage,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.email.errorMessage
+                : null,
           ),
           const SizedBox(height: 30),
           CustomTextFormField(
@@ -100,7 +114,9 @@ class _RegisterForm extends ConsumerWidget {
             obscureText: true,
             onChanged: (value) =>
                 ref.read(registerFormProvider.notifier).onPasswordChange(value),
-            errorMessage: registerForm.password.errorMessage,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.password.errorMessage
+                : null,
           ),
           const SizedBox(height: 30),
           CustomTextFormField(
@@ -109,7 +125,9 @@ class _RegisterForm extends ConsumerWidget {
             onChanged: (value) => ref
                 .read(registerFormProvider.notifier)
                 .onPasswordRepeatChange(value),
-            errorMessage: registerForm.passwordRepeat.errorMessage,
+            errorMessage: registerForm.isFormPosted
+                ? registerForm.passwordRepeat.errorMessage
+                : null,
           ),
           const SizedBox(height: 30),
           SizedBox(

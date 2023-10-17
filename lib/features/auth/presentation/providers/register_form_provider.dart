@@ -1,6 +1,7 @@
 //1. Crear el estado de este provider como StateNotifierProvider
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop_flutter/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
 class RegisterFormState {
@@ -52,8 +53,10 @@ class RegisterFormState {
 
 //2. Como implementamos un notifier
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
+  final Function(String, String, String) registerUserCallback;
   //en el super mandamos la creacion del estado inicial o pure(), que es cuando no se ha tocado el formulario
-  RegisterFormNotifier() : super(RegisterFormState());
+  RegisterFormNotifier({required this.registerUserCallback})
+      : super(RegisterFormState());
   onEmailChange(String value) {
     // .dirty indica que el campo de correo electrónico ha sido modificado y necesita validación.
     final newEmail = Email.dirty(value);
@@ -88,10 +91,11 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
             [newName, state.email, state.password, state.passwordRepeat]));
   }
 
-  onFormSubmit() {
+  onFormSubmit() async {
     _touchedEveryField();
     if (!state.isValid) return;
-    print(state);
+    await registerUserCallback(
+        state.email.value, state.password.value, state.name.value);
   }
 
   _touchedEveryField() {
@@ -116,5 +120,6 @@ final registerFormProvider =
     StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
         (ref) {
   //autodispose destruye informacion cuando se cambie de pantalla
-  return RegisterFormNotifier();
+  final registerUserCallback = ref.watch(authProvider.notifier).registerUser;
+  return RegisterFormNotifier(registerUserCallback: registerUserCallback);
 });

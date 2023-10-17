@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop_flutter/features/auth/domain/domain.dart';
 import 'package:teslo_shop_flutter/features/auth/infrastructure/infrastructure.dart';
 
+enum AuthStatus { checking, authenticated, notAuthenticated }
+
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authRepository = AuthRepositoryImpl();
 
@@ -29,7 +31,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
     // state =state.copyWith(user: user, authStatus: AuthStatus.authenticated)
   }
 
-  void registerUser(String email, String password) async {}
+  Future<void> registerUser(String email, String password, String fullName) async {
+    try {
+      final user = await authRepository.register(email, password, fullName);
+      _setLoggedUser(user);
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error interno=>$e');
+    }
+  }
 
   void checkAuthStatus() async {}
 
@@ -49,8 +60,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: errorMessage);
   }
 }
-
-enum AuthStatus { checking, authenticated, notAuthenticated }
 
 class AuthState {
   final AuthStatus authStatus;
