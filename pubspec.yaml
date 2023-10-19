@@ -16,6 +16,7 @@ dependencies:
   go_router: ^10.1.2
   google_fonts: ^4.0.4
   riverpod: ^2.3.7
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
