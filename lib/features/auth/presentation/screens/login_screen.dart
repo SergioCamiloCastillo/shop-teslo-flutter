@@ -89,6 +89,9 @@ class _LoginForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            onFieldSubmitted: (_) {
+              ref.read(loginFormProvider.notifier).onFormSubmit();
+            },
             onChanged: (value) =>
                 ref.read(loginFormProvider.notifier).onPasswordChanged(value),
             errorMessage: loginFormState.isFormPosted
@@ -100,12 +103,12 @@ class _LoginForm extends ConsumerWidget {
               width: double.infinity,
               height: 60,
               child: CustomFilledButton(
-                text: 'Ingresar',
-                buttonColor: Colors.black,
-                onPressed: () {
-                  ref.read(loginFormProvider.notifier).onFormSubmit();
-                },
-              )),
+                  text: 'Ingresar',
+                  buttonColor: Colors.black,
+                  onPressed: loginFormState.isPosting
+                      ? null
+                      : ref.read(loginFormProvider.notifier).onFormSubmit)),
+          //en .onFormSubmit no se colocan (), porque queremos que se ejecute cuando se da click en boton, si se coloca en (), entonces  se ejecutara automaticamente
           const Spacer(flex: 2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
