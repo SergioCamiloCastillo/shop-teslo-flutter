@@ -7,22 +7,22 @@ class ProductsRepositoryImpl extends ProductsRepository {
   ProductsRepositoryImpl(this.datasource);
 
   @override
-  Future<Product> createUpdateProduct(Map<String, dynamic> productLike) {
-    return datasource.createUpdateProduct(productLike);
+  Future<Product> createUpdateProductRepository(Map<String, dynamic> productLike) {
+    return datasource.createUpdateProductDatasource(productLike);
   }
 
   @override
-  Future<Product> getProductById(String id) {
-    return datasource.getProductById(id);
+  Future<Product> getProductByIdRepository(String id) {
+    return datasource.getProductByIdDatasource(id);
   }
 
   @override
-  Future<List<Product>> getProductsByPage({int limit = 10, int offset = 0}) {
-    return datasource.getProductsByPage(limit: limit, offset: offset);
+  Future<List<Product>> getProductsByPageRepository({int limit = 10, int offset = 0}) {
+    return datasource.getProductsByPageDatasource(limit: limit, offset: offset);
   }
 
   @override
-  Future<List<Product>> searchProductByTerm(String term) {
-    return datasource.searchProductByTerm(term);
+  Future<List<Product>> searchProductByTermRepository(String term) {
+    return datasource.searchProductByTermDatasource(term);
   }
 }

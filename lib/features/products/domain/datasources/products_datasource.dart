@@ -2,8 +2,8 @@ import 'package:teslo_shop_flutter/features/products/domain/entities/product.dar
 
 abstract class ProductsDatasource {
   //se definen solo las reglas
-  Future<List<Product>> getProductsByPage({int limit = 10, int offset = 0});
-  Future<Product> getProductById(String id);
-  Future<List<Product>> searchProductByTerm(String term);
-  Future<Product> createUpdateProduct(Map<String, dynamic> productLike);
+  Future<List<Product>> getProductsByPageDatasource({int limit = 10, int offset = 0});
+  Future<Product> getProductByIdDatasource(String id);
+  Future<List<Product>> searchProductByTermDatasource(String term);
+  Future<Product> createUpdateProductDatasource(Map<String, dynamic> productLike);
 }
