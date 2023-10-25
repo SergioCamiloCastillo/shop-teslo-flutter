@@ -32,9 +32,10 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     final response =
         await dio.get<List>('/products?limit=$limit&offset=$offset');
     final List<Product> products = [];
-    for (var element in response.data ?? []) {
-      products.add(ProductMapper.jsonToEntity(element));
+    for (final product in response.data ?? []) {
+      products.add(ProductMapper.jsonToEntity(product));
     }
+
     return products;
   }
 
