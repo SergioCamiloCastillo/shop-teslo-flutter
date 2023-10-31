@@ -125,6 +125,7 @@ class _SizeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SegmentedButton(
+      emptySelectionAllowed: true,
       showSelectedIcon: false,
       segments: sizes.map((size) {
         return ButtonSegment(
@@ -155,6 +156,7 @@ class _GenderSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: SegmentedButton(
+        emptySelectionAllowed: false,
         multiSelectionEnabled: false,
         showSelectedIcon: false,
         style: const ButtonStyle(visualDensity: VisualDensity.compact),
