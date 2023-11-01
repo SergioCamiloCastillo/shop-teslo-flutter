@@ -1,7 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop_flutter/config/constants/environment.dart';
 import 'package:teslo_shop_flutter/features/products/domain/domain.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
+
+//el provider, proveera el notifier y el state a todo el arbol de widgets
+//autodispose,  es que cuando me salgo recupera el estado por defecto
+// necesito family porque se requiere el producto
+
+final productFormProvider = StateNotifierProvider.autoDispose
+    .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
+  return ProductFormNotifier(product: product);
+});
 
 //el notifier mantiene el productformstate y sus cambios
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
@@ -23,9 +33,25 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   //la idea de la funcion onSubmitCallback, es que cuando haga el submit del formulario, llame onSubmitCallback, y ahi se valida el formulario, antes de llegar al backend
   Future<bool> onFormSubmit() async {
     _touchedEverything();
-    if (!state.isFormValid) return false;
+    if (state.isFormValid == false) return false;
     if (onSubmitCallback == null) return false;
-    
+    //productLike, es el objeto que que enviare al backend
+    final productLike = {
+      "id": state.id,
+      "title": state.title.value,
+      "price": state.title.value,
+      "description": state.description,
+      "slug": state.slug.value,
+      "stock": state.inStock.value,
+      "sizes": state.sizes,
+      "gender": state.gender,
+      "tags": state.tags.split(','),
+      "images": state.images
+          .map((image) =>
+              image.replaceAll('${Environment.apiUrl}/files/product/', ''))
+          .toList()
+    };
+    return true;
   }
 
   void _touchedEverything() {
