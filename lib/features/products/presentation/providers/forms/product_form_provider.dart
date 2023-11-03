@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop_flutter/config/constants/environment.dart';
 import 'package:teslo_shop_flutter/features/products/domain/domain.dart';
+import 'package:teslo_shop_flutter/features/products/presentation/providers/providers.dart';
 import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
 //el provider, proveera el notifier y el state a todo el arbol de widgets
@@ -10,12 +11,18 @@ import 'package:teslo_shop_flutter/features/shared/shared.dart';
 
 final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
-  return ProductFormNotifier(product: product);
+  //final createUpdateCallback = ref.watch(productsRepositoryProvider).createUpdateProductRepository;
+  final createUpdateCallback =
+      ref.watch(productsProvider.notifier).createOrUpdateProduct;
+  print('llega aquiiiii');
+  return ProductFormNotifier(
+      product: product, onSubmitCallback: createUpdateCallback);
 });
 
 //el notifier mantiene el productformstate y sus cambios
 class ProductFormNotifier extends StateNotifier<ProductFormState> {
-  final void Function(Map<String, dynamic> productLike)? onSubmitCallback;
+  final Future<bool> Function(Map<String, dynamic> productLike)?
+      onSubmitCallback;
 
   ProductFormNotifier({this.onSubmitCallback, required Product product})
       : super(ProductFormState(
@@ -37,9 +44,9 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     if (onSubmitCallback == null) return false;
     //productLike, es el objeto que que enviare al backend
     final productLike = {
-      "id": state.id,
+      "id": state.id == 'new' ? null : state.id,
       "title": state.title.value,
-      "price": state.title.value,
+      "price": state.price.value,
       "description": state.description,
       "slug": state.slug.value,
       "stock": state.inStock.value,
@@ -51,7 +58,12 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
               image.replaceAll('${Environment.apiUrl}/files/product/', ''))
           .toList()
     };
-    return true;
+    try {
+      await onSubmitCallback!(productLike);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   void _touchedEverything() {

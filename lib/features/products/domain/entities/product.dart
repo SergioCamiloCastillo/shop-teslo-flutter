@@ -1,6 +1,4 @@
-
 import 'package:teslo_shop_flutter/features/auth/domain/domain.dart';
-
 
 class Product {
   final String id;
@@ -26,7 +24,6 @@ class Product {
     required this.gender,
     required this.tags,
     required this.images,
-    required this.user,
+    this.user,
   });
-
 }
