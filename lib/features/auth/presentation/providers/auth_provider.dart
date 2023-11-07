@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop_flutter/features/auth/domain/domain.dart';
 import 'package:teslo_shop_flutter/features/auth/infrastructure/infrastructure.dart';
-import 'package:teslo_shop_flutter/features/shared/infrastructure/services/key_value_storage_service_impl.dart';
+import 'package:teslo_shop_flutter/features/shared/infrastructure/services/local_storage/key_value_storage_service_impl.dart';
 
 enum AuthStatus { checking, authenticated, notAuthenticated }
 
